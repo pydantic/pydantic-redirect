@@ -1,0 +1,3 @@
+name = "pydantic-errors-redirect"
+main = "src/index.ts"
+compatibility_date = "2023-04-24"
