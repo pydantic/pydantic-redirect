@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request: {}
+
+env:
+  COLUMNS: 150
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    name: lint
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up node
+        uses: actions/setup-node@v3
+
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: >
+            ${{ hashFiles('package.json') }}
+            ${{ hashFiles('package-lock.json') }}
+
+      - name: install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: lint
+        run: npm run lint
+
+      - name: test
+        run: npm run test
