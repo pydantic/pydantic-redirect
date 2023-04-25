@@ -17,8 +17,8 @@
     "build": "wrangler build",
     "preview": "wrangler preview --watch",
     "dev": "wrangler dev --watch",
+    "format": "eslint src --cache --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx --fix",
     "lint": "eslint src --cache --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx",
-    "lint-fix": "eslint src --cache --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx --fix",
     "test": "vitest run",
     "test-update": "vitest run --update"
   },
@@ -49,6 +49,9 @@
         "plugins": [
           "@typescript-eslint"
         ],
+        "rules": {
+          "prettier/prettier": ["error", { "semi": false }]
+        },
         "parserOptions": {
           "sourceType": "module",
           "warnOnUnsupportedTypeScriptVersion": true

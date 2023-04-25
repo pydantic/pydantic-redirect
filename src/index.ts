@@ -21,18 +21,18 @@ export default {
     // env: Env,
     // ctx: ExecutionContext
   ): Promise<Response> {
-    const { url } = request;
-    const { pathname } = new URL(url);
+    const { url } = request
+    const { pathname } = new URL(url)
     // the first item in the following split will be the version; currently unused
-    const [, variant, theRest] = pathname.slice(1).split("/", 3);
+    const [, variant, theRest] = pathname.slice(1).split("/", 3)
 
     if (!["u", "v"].includes(variant) || !theRest) {
-      return new Response("Not Found", { status: 404 });
+      return new Response("Not Found", { status: 404 })
     }
 
-    const redirectVariant = variant === "u" ? "usage" : "validation";
-    const redirectUrl = `https://docs.pydantic.dev/${redirectVariant}/errors/${theRest}`;
+    const redirectVariant = variant === "u" ? "usage" : "validation"
+    const redirectUrl = `https://docs.pydantic.dev/${redirectVariant}/errors/${theRest}`
 
-    return Response.redirect(redirectUrl, 307);
+    return Response.redirect(redirectUrl, 307)
   },
-};
+}
