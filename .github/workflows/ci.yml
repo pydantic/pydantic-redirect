@@ -49,10 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: set up node
-        uses: actions/setup-node@v3
-
       - uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.cloudflare_api_token }}
-          command: pages publish --var GITHUB_SHA:${{ github.sha }}
+          command: publish --var GITHUB_SHA:${{ github.sha }}
