@@ -39,7 +39,7 @@ describe("Worker", () => {
 
     expect(resp.status).toMatchInlineSnapshot("307")
     expect(redirectUrl).toMatchInlineSnapshot(
-      '"https://docs.pydantic.dev/usage/errors/decorator-missing-field"'
+      '"https://docs.pydantic.dev/usage/errors/#decorator-missing-field"'
     )
   })
 
@@ -51,7 +51,7 @@ describe("Worker", () => {
 
     expect(resp.status).toMatchInlineSnapshot("307")
     expect(redirectUrl).toMatchInlineSnapshot(
-      '"https://docs.pydantic.dev/validation/errors/decorator-missing-field"'
+      '"https://docs.pydantic.dev/usage/validation_errors/#decorator-missing-field"'
     )
   })
 })
