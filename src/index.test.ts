@@ -20,7 +20,7 @@ describe("Worker", () => {
     const text = await resp.text()
     expect(resp.status).toMatchInlineSnapshot("200")
     expect(text).toMatchInlineSnapshot(
-      "\"Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA 'unknown'.\""
+      '"Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA unknown."'
     )
   })
 
