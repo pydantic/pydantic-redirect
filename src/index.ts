@@ -15,10 +15,6 @@ export interface Env {
   // MY_SERVICE: Fetcher;
 }
 
-// https://errors.pydantic.dev/v2.0a3/u/decorator-missing-field
-//
-// https://docs.pydantic.dev/usage/errors/#decorator-missing-field
-
 export default {
   async fetch(
     request: Request
