@@ -18,8 +18,10 @@ describe("Worker", () => {
   it("should 404 at root", async () => {
     const resp = await worker.fetch("/", { redirect: "manual" })
     const text = await resp.text()
-    expect(resp.status).toMatchInlineSnapshot("404")
-    expect(text).toMatchInlineSnapshot('"Not Found"')
+    expect(resp.status).toMatchInlineSnapshot("200")
+    expect(text).toMatchInlineSnapshot(
+      '"Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA undefined"'
+    )
   })
 
   it("should 404 for unexpected variant", async () => {
@@ -52,6 +54,16 @@ describe("Worker", () => {
     expect(resp.status).toMatchInlineSnapshot("307")
     expect(redirectUrl).toMatchInlineSnapshot(
       '"https://docs.pydantic.dev/usage/validation_errors/#decorator-missing-field"'
+    )
+  })
+
+  it("should show message on /", async () => {
+    const resp = await worker.fetch("/")
+    const text = await resp.text()
+
+    expect(resp.status).toMatchInlineSnapshot("200")
+    expect(text).toMatchInlineSnapshot(
+      '"Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA undefined"'
     )
   })
 })

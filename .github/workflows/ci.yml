@@ -12,7 +12,7 @@ env:
   COLUMNS: 150
 
 jobs:
-  ci:
+  test:
     runs-on: ubuntu-latest
     name: CI
     steps:
@@ -39,3 +39,18 @@ jobs:
 
       - name: test
         run: npm run test
+
+  deploy:
+    if: "success() && github.ref == 'refs/heads/main'"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up node
+        uses: actions/setup-node@v3
+
+      - uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.cloudflare_api_token }}
+          command: pages publish --var GITHUB_SHA:${{ github.sha }}

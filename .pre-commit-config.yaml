@@ -9,9 +9,9 @@ repos:
 
 - repo: local
   hooks:
-  - id: lint
-    name: Lint
-    entry: npm run lint
+  - id: format
+    name: Format
+    entry: npm run format
     types: [ts]
     language: system
     pass_filenames: false
