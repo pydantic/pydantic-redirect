@@ -14,7 +14,7 @@ export default {
 
     if (pathname === "/") {
       return new Response(
-        `Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA '${env.GITHUB_SHA}'.`
+        `Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA ${env.GITHUB_SHA}.`
       )
     }
 
