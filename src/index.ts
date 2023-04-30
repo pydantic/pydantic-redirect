@@ -26,7 +26,7 @@ export default {
     }
 
     const errorVariant = variant === "u" ? "errors" : "validation_errors"
-    const redirectUrl = `https://docs.pydantic.dev/usage/${errorVariant}/#${theRest}`
+    const redirectUrl = `https://docs.pydantic.dev/dev-v2/usage/${errorVariant}/#${theRest}`
 
     return Response.redirect(redirectUrl, 307)
   },

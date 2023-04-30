@@ -11,5 +11,5 @@ Example redirect
 ```
 https://errors.pydantic.dev/v2.0a3/u/decorator-missing-field
  ->
-https://docs.pydantic.dev/usage/errors/#decorator-missing-field
+https://docs.pydantic.dev/dev-v2/usage/errors/#decorator-missing-field
 ```
