@@ -18,15 +18,27 @@ export default {
       )
     }
 
-    // the first item in the following split will be the version; currently unused
+    // The first item in the following split will be the version; currently unused.
+    // The last item is an optional anchor on the target page
     const [, variant, theRest] = pathname.slice(1).split("/", 3)
 
-    if (!["u", "v"].includes(variant) || !theRest) {
-      return new Response("Not Found", { status: 404 })
+    let segment: string
+    switch (variant) {
+      case "migration":
+        segment = "migration"
+        break
+      case "u":
+        segment = "usage/errors"
+        break
+      case "v":
+        segment = "usage/validation_errors"
+        break
+      default:
+        return new Response("Not Found", { status: 404 })
     }
 
-    const errorVariant = variant === "u" ? "errors" : "validation_errors"
-    const redirectUrl = `https://docs.pydantic.dev/dev-v2/usage/${errorVariant}/#${theRest}`
+    const anchor = theRest ? `#${theRest}` : ""
+    const redirectUrl = `https://docs.pydantic.dev/dev-v2/${segment}/${anchor}`
 
     return Response.redirect(redirectUrl, 307)
   },
