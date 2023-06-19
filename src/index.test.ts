@@ -66,4 +66,33 @@ describe("Worker", () => {
       '"Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA unknown."'
     )
   })
+
+  it("should redirect to migration guide with no anchor", async () => {
+    for (const url of ["/v2.0/migration", "/v2.0/migration/"]) {
+      const resp = await worker.fetch(url, {
+        redirect: "manual",
+      })
+      const redirectUrl = resp.headers.get("Location")
+
+      expect(resp.status).toMatchInlineSnapshot("307")
+      expect(redirectUrl).toMatchInlineSnapshot(
+        '"https://docs.pydantic.dev/dev-v2/migration/"'
+      )
+    }
+  })
+
+  it("should redirect to migration guide with a proper anchor", async () => {
+    const resp = await worker.fetch(
+      "/v2.0/migration/validator-and-root_validator-are-deprecated",
+      {
+        redirect: "manual",
+      }
+    )
+    const redirectUrl = resp.headers.get("Location")
+
+    expect(resp.status).toMatchInlineSnapshot("307")
+    expect(redirectUrl).toMatchInlineSnapshot(
+      '"https://docs.pydantic.dev/dev-v2/migration/#validator-and-root_validator-are-deprecated"'
+    )
+  })
 })
