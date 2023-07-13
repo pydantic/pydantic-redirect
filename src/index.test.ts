@@ -95,4 +95,12 @@ describe("Worker", () => {
       '"https://docs.pydantic.dev/dev-v2/migration/#validator-and-root_validator-are-deprecated"'
     )
   })
+
+  it("should get download_count", async () => {
+    const resp = await worker.fetch("/download-count/")
+    expect(resp.status).toMatchInlineSnapshot("200")
+
+    const text = await resp.text()
+    expect(text).includes("M")
+  })
 })

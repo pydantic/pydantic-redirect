@@ -16,6 +16,8 @@ export default {
       return new Response(
         `Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA ${env.GITHUB_SHA}.`
       )
+    } else if (pathname == "/download-count/") {
+      return await download_count()
     }
 
     // The first item in the following split will be the version; currently unused.
@@ -42,4 +44,15 @@ export default {
 
     return Response.redirect(redirectUrl, 307)
   },
+}
+
+async function download_count(): Promise<Response> {
+  const r = await fetch("https://pepy.tech/badge/pydantic/month")
+  const text = await r.text()
+  const m = text.match(/>(\d+[a-zA-Z])<\/text>/)
+  if (m) {
+    return new Response(m[1], { headers: { "content-type": "text/plain" } })
+  } else {
+    return new Response("Unable to find download count", { status: 504 })
+  }
 }
