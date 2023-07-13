@@ -16,7 +16,7 @@ export default {
       return new Response(
         `Pydantic Errors Redirect, see https://github.com/pydantic/pydantic-errors-redirect for more info. Release SHA ${env.GITHUB_SHA}.`
       )
-    } else if (pathname == "/download-count/") {
+    } else if (pathname == "/download-count.txt") {
       return await download_count()
     }
 
@@ -51,7 +51,14 @@ async function download_count(): Promise<Response> {
   const text = await r.text()
   const m = text.match(/>(\d+[a-zA-Z])<\/text>/)
   if (m) {
-    return new Response(m[1], { headers: { "content-type": "text/plain" } })
+    return new Response(m[1], {
+      headers: {
+        "content-type": "text/plain",
+        // "access-control-allow-origin": "https://docs.pydantic.dev",
+        // allowing any domain allows local development and previews to work
+        "access-control-allow-origin": "*",
+      },
+    })
   } else {
     return new Response("Unable to find download count", { status: 504 })
   }
