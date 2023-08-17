@@ -6,3 +6,4 @@ route = "errors.pydantic.dev/*"
 
 [vars]
 GITHUB_SHA = "unknown"
+DOCS_VERSIONS = "2.0, dev-v2"

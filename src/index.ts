@@ -1,5 +1,6 @@
 export interface Env {
   GITHUB_SHA: string
+  DOCS_VERSIONS: string
 }
 
 export default {
@@ -11,6 +12,7 @@ export default {
     // example URL https://errors.pydantic.dev/2.0/u/decorator-missing-field
     const { url } = request
     const { pathname } = new URL(url)
+    const docsVersions = env.DOCS_VERSIONS.split(",").map((v) => v.trim())
 
     if (pathname === "/") {
       return new Response(
@@ -22,25 +24,27 @@ export default {
 
     // The first item in the following split will be the version; currently unused.
     // The last item is an optional anchor on the target page
-    const [, variant, theRest] = pathname.slice(1).split("/", 3)
+    const [version, variant, theRest] = pathname.slice(1).split("/", 3)
 
-    let segment: string
+    const versionSegment = docsVersions.includes(version) ? version : "dev-v2"
+
+    let variantSegment: string
     switch (variant) {
       case "migration":
-        segment = "migration"
+        variantSegment = "migration"
         break
       case "u":
-        segment = "usage/errors"
+        variantSegment = "usage/errors"
         break
       case "v":
-        segment = "usage/validation_errors"
+        variantSegment = "usage/validation_errors"
         break
       default:
         return new Response("Not Found", { status: 404 })
     }
 
     const anchor = theRest ? `#${theRest}` : ""
-    const redirectUrl = `https://docs.pydantic.dev/dev-v2/${segment}/${anchor}`
+    const redirectUrl = `https://docs.pydantic.dev/${versionSegment}/${variantSegment}/${anchor}`
 
     return Response.redirect(redirectUrl, 307)
   },
