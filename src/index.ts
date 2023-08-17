@@ -47,7 +47,7 @@ export default {
 }
 
 async function download_count(): Promise<Response> {
-  const r = await fetch("https://pepy.tech/badge/pydantic/month")
+  const r = await fetch("https://static.pepy.tech/badge/pydantic/month")
   const text = await r.text()
   const m = text.match(/>(\d+[a-zA-Z])<\/text>/)
   if (m) {
