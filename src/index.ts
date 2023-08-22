@@ -1,6 +1,7 @@
+const versionRegex = /^2\.\d+$/
+
 export interface Env {
   GITHUB_SHA: string
-  DOCS_VERSIONS: string
 }
 
 export default {
@@ -12,7 +13,6 @@ export default {
     // example URL https://errors.pydantic.dev/2.0/u/decorator-missing-field
     const { url } = request
     const { pathname } = new URL(url)
-    const docsVersions = env.DOCS_VERSIONS.split(",").map((v) => v.trim())
 
     if (pathname === "/") {
       return new Response(
@@ -26,7 +26,7 @@ export default {
     // The last item is an optional anchor on the target page
     const [version, variant, theRest] = pathname.slice(1).split("/", 3)
 
-    const versionSegment = docsVersions.includes(version) ? version : "dev-v2"
+    const versionSegment = versionRegex.test(version) ? version : "dev-v2"
 
     let variantSegment: string
     switch (variant) {

@@ -8,7 +8,6 @@ describe("Worker", () => {
   beforeAll(async () => {
     worker = await unstable_dev("src/index.ts", {
       experimental: { disableExperimentalWarning: true },
-      vars: { DOCS_VERSIONS: "2.0, 2.1, 2.2" },
     })
   })
 
@@ -35,7 +34,7 @@ describe("Worker", () => {
   })
 
   it("should redirect to usage docs with proper version", async () => {
-    for (const version of ["2.0", "2.1", "2.2"]) {
+    for (const version of ["2.0", "2.1", "2.2", "2.10", "2.12"]) {
       const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
         redirect: "manual",
       })
@@ -49,7 +48,7 @@ describe("Worker", () => {
   })
 
   it("should redirect to usage docs for 'dev-v2' for unknown version", async () => {
-    for (const version of ["2.3", "unknown"]) {
+    for (const version of ["3.0", "unknown"]) {
       const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
         redirect: "manual",
       })
