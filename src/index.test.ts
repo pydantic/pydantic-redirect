@@ -25,7 +25,7 @@ describe("Worker", () => {
   })
 
   it("should 404 for unexpected variant", async () => {
-    const resp = await worker.fetch("/v2.0a3/z/decorator-missing-field", {
+    const resp = await worker.fetch("/2.0a3/z/decorator-missing-field", {
       redirect: "manual",
     })
     const text = await resp.text()
@@ -33,20 +33,36 @@ describe("Worker", () => {
     expect(text).toMatchInlineSnapshot('"Not Found"')
   })
 
-  it("should redirect to usage docs", async () => {
-    const resp = await worker.fetch("/v2.0a3/u/decorator-missing-field", {
-      redirect: "manual",
-    })
-    const redirectUrl = resp.headers.get("Location")
+  it("should redirect to usage docs with proper version", async () => {
+    for (const version of ["2.0", "2.1", "2.2", "2.10", "2.12"]) {
+      const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
+        redirect: "manual",
+      })
+      const redirectUrl = resp.headers.get("Location")
 
-    expect(resp.status).toMatchInlineSnapshot("307")
-    expect(redirectUrl).toMatchInlineSnapshot(
-      '"https://docs.pydantic.dev/dev-v2/usage/errors/#decorator-missing-field"'
-    )
+      expect(resp.status).toMatchInlineSnapshot("307")
+      expect(redirectUrl).toMatchInlineSnapshot(
+        `"https://docs.pydantic.dev/${version}/usage/errors/#decorator-missing-field"`
+      )
+    }
+  })
+
+  it("should redirect to usage docs for 'dev-v2' for unknown version", async () => {
+    for (const version of ["3.0", "unknown"]) {
+      const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
+        redirect: "manual",
+      })
+      const redirectUrl = resp.headers.get("Location")
+
+      expect(resp.status).toMatchInlineSnapshot("307")
+      expect(redirectUrl).toMatchInlineSnapshot(
+        `"https://docs.pydantic.dev/dev-v2/usage/errors/#decorator-missing-field"`
+      )
+    }
   })
 
   it("should redirect to validation docs", async () => {
-    const resp = await worker.fetch("/v2.0a3/v/decorator-missing-field", {
+    const resp = await worker.fetch("/2.0a3/v/decorator-missing-field", {
       redirect: "manual",
     })
     const redirectUrl = resp.headers.get("Location")
@@ -68,7 +84,7 @@ describe("Worker", () => {
   })
 
   it("should redirect to migration guide with no anchor", async () => {
-    for (const url of ["/v2.0/migration", "/v2.0/migration/"]) {
+    for (const url of ["/2.2/migration", "/2.2/migration/"]) {
       const resp = await worker.fetch(url, {
         redirect: "manual",
       })
@@ -76,14 +92,14 @@ describe("Worker", () => {
 
       expect(resp.status).toMatchInlineSnapshot("307")
       expect(redirectUrl).toMatchInlineSnapshot(
-        '"https://docs.pydantic.dev/dev-v2/migration/"'
+        '"https://docs.pydantic.dev/2.2/migration/"'
       )
     }
   })
 
   it("should redirect to migration guide with a proper anchor", async () => {
     const resp = await worker.fetch(
-      "/v2.0/migration/validator-and-root_validator-are-deprecated",
+      "/2.2/migration/validator-and-root_validator-are-deprecated",
       {
         redirect: "manual",
       }
@@ -92,7 +108,7 @@ describe("Worker", () => {
 
     expect(resp.status).toMatchInlineSnapshot("307")
     expect(redirectUrl).toMatchInlineSnapshot(
-      '"https://docs.pydantic.dev/dev-v2/migration/#validator-and-root_validator-are-deprecated"'
+      '"https://docs.pydantic.dev/2.2/migration/#validator-and-root_validator-are-deprecated"'
     )
   })
 
