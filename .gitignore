@@ -1,6 +1,7 @@
 .idea/
 .vscode
 /dist/
+/.wrangler/
 
 node_modules/
 .eslintcache
