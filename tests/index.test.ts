@@ -5,7 +5,8 @@ import { env, fetchMock } from 'cloudflare:test'
 import worker from '../src/index'
 
 async function worker_request(path: string): Promise<Response> {
-  const request = new Request('https://errors.pydantic.dev' + path, { redirect: 'manual' })
+  const url = path.match(/^https?:\/\//) ? path : 'https://errors.pydantic.dev' + path
+  const request = new Request(url, { redirect: 'manual' })
   return await worker.fetch(request, env)
 }
 
@@ -94,5 +95,41 @@ describe('Worker', () => {
 
     const text = await resp.text()
     expect(text).toMatchInlineSnapshot('"123M"')
+  })
+
+  it('should proxy /fastui/', async () => {
+    fetchMock
+      .get('https://fastui.pages.dev')
+      .intercept({ path: '/' })
+      .reply(200, '<h1>testing</h1>')
+    const resp = await worker_request('https://docs.pydantic.dev/fastui/')
+    expect(resp.status).toMatchInlineSnapshot('200')
+
+    const text = await resp.text()
+    expect(text).toMatchInlineSnapshot('"<h1>testing</h1>"')
+  })
+
+  it('should proxy /fastui', async () => {
+    fetchMock
+      .get('https://fastui.pages.dev')
+      .intercept({ path: '/' })
+      .reply(200, '<h1>testing</h1>')
+    const resp = await worker_request('https://docs.pydantic.dev/fastui')
+    expect(resp.status).toMatchInlineSnapshot('200')
+
+    const text = await resp.text()
+    expect(text).toMatchInlineSnapshot('"<h1>testing</h1>"')
+  })
+
+  it('should proxy /fastui/foo/', async () => {
+    fetchMock
+      .get('https://fastui.pages.dev')
+      .intercept({ path: '/foo/' })
+      .reply(200, '<h1>foo</h1>')
+    const resp = await worker_request('https://docs.pydantic.dev/fastui/foo/')
+    expect(resp.status).toMatchInlineSnapshot('200')
+
+    const text = await resp.text()
+    expect(text).toMatchInlineSnapshot('"<h1>foo</h1>"')
   })
 })
