@@ -31,7 +31,7 @@ jobs:
             ${{ hashFiles('package-lock.json') }}
 
       - name: install
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm install
 
       - name: lint
