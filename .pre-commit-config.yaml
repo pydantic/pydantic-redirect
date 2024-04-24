@@ -15,3 +15,15 @@ repos:
     types: [ts]
     language: system
     pass_filenames: false
+  - id: lint
+    name: Lint
+    entry: npm run lint
+    types: [ts]
+    language: system
+    pass_filenames: false
+  - id: test
+    name: Test
+    entry: npm run test
+    types: [ts]
+    language: system
+    pass_filenames: false

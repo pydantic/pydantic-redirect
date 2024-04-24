@@ -48,7 +48,7 @@ describe('Worker', () => {
     }
   })
 
-  it("should redirect to usage docs for 'dev-v2' for unknown version", async () => {
+  it("should redirect to usage docs for 'dev' for unknown version", async () => {
     for (const version of ['3.0', 'unknown']) {
       const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
         redirect: 'manual',
@@ -56,9 +56,7 @@ describe('Worker', () => {
       const redirectUrl = resp.headers.get('Location')
 
       expect(resp.status).toMatchInlineSnapshot('307')
-      expect(redirectUrl).toMatchInlineSnapshot(
-        `"https://docs.pydantic.dev/dev-v2/usage/errors/#decorator-missing-field"`
-      )
+      expect(redirectUrl).toMatchInlineSnapshot(`"https://docs.pydantic.dev/dev/usage/errors/#decorator-missing-field"`)
     }
   })
 
@@ -70,7 +68,7 @@ describe('Worker', () => {
 
     expect(resp.status).toMatchInlineSnapshot('307')
     expect(redirectUrl).toMatchInlineSnapshot(
-      '"https://docs.pydantic.dev/dev-v2/usage/validation_errors/#decorator-missing-field"'
+      '"https://docs.pydantic.dev/dev/usage/validation_errors/#decorator-missing-field"'
     )
   })
 

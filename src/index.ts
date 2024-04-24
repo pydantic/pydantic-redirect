@@ -54,7 +54,7 @@ async function errors_pydantic_dev(pathname: string, env: Env): Promise<Response
     // The last item is an optional anchor on the target page
     const [version, variant, theRest] = pathname.slice(1).split('/', 3)
 
-    const versionSegment = versionRegex.test(version) ? version : 'dev-v2'
+    const versionSegment = versionRegex.test(version) ? version : 'dev'
 
     let variantSegment: string
     switch (variant) {
