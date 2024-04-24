@@ -1,23 +1,23 @@
-import { unstable_dev } from 'wrangler'
-import type { UnstableDevWorker } from 'wrangler'
-import { describe, expect, it, beforeAll, afterAll } from 'vitest'
+import { describe, expect, it, beforeAll, afterEach } from 'vitest'
+
+import { env, fetchMock } from 'cloudflare:test'
+// Could import any other source file/function here
+import worker from '../src/index'
+
+async function worker_request(path: string): Promise<Response> {
+  const request = new Request('https://errors.pydantic.dev' + path, { redirect: 'manual' })
+  return await worker.fetch(request, env)
+}
 
 describe('Worker', () => {
-  let worker: UnstableDevWorker
-
-  beforeAll(async () => {
-    worker = await unstable_dev('src/index.ts', {
-      ip: '127.0.0.1',
-      experimental: { disableExperimentalWarning: true },
-    })
+  beforeAll(() => {
+    fetchMock.activate()
+    fetchMock.disableNetConnect()
   })
+  afterEach(() => fetchMock.assertNoPendingInterceptors())
 
-  afterAll(async () => {
-    await worker.stop()
-  })
-
-  it('should 404 at root', async () => {
-    const resp = await worker.fetch('/', { redirect: 'manual' })
+  it('should 200 at root', async () => {
+    const resp = await worker_request('/')
     const text = await resp.text()
     expect(resp.status).toMatchInlineSnapshot('200')
     expect(text).toMatchInlineSnapshot(
@@ -26,9 +26,7 @@ describe('Worker', () => {
   })
 
   it('should 404 for unexpected variant', async () => {
-    const resp = await worker.fetch('/2.0a3/z/decorator-missing-field', {
-      redirect: 'manual',
-    })
+    const resp = await worker_request('/2.0a3/z/decorator-missing-field')
     const text = await resp.text()
     expect(resp.status).toMatchInlineSnapshot('404')
     expect(text).toMatchInlineSnapshot('"Not Found"')
@@ -36,9 +34,7 @@ describe('Worker', () => {
 
   it('should redirect to usage docs with proper version', async () => {
     for (const version of ['2.0', '2.1', '2.2', '2.10', '2.12']) {
-      const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
-        redirect: 'manual',
-      })
+      const resp = await worker_request(`/${version}/u/decorator-missing-field`)
       const redirectUrl = resp.headers.get('Location')
 
       expect(resp.status).toMatchInlineSnapshot('307')
@@ -50,9 +46,7 @@ describe('Worker', () => {
 
   it("should redirect to usage docs for 'dev' for unknown version", async () => {
     for (const version of ['3.0', 'unknown']) {
-      const resp = await worker.fetch(`/${version}/u/decorator-missing-field`, {
-        redirect: 'manual',
-      })
+      const resp = await worker_request(`/${version}/u/decorator-missing-field`)
       const redirectUrl = resp.headers.get('Location')
 
       expect(resp.status).toMatchInlineSnapshot('307')
@@ -61,9 +55,7 @@ describe('Worker', () => {
   })
 
   it('should redirect to validation docs', async () => {
-    const resp = await worker.fetch('/2.0a3/v/decorator-missing-field', {
-      redirect: 'manual',
-    })
+    const resp = await worker_request('/2.0a3/v/decorator-missing-field')
     const redirectUrl = resp.headers.get('Location')
 
     expect(resp.status).toMatchInlineSnapshot('307')
@@ -72,21 +64,9 @@ describe('Worker', () => {
     )
   })
 
-  it('should show message on /', async () => {
-    const resp = await worker.fetch('/')
-    const text = await resp.text()
-
-    expect(resp.status).toMatchInlineSnapshot('200')
-    expect(text).toMatchInlineSnapshot(
-      '"Pydantic Redirect & Proxy, see https://github.com/pydantic/pydantic-redirect for more info. Release SHA unknown."'
-    )
-  })
-
   it('should redirect to migration guide with no anchor', async () => {
     for (const url of ['/2.2/migration', '/2.2/migration/']) {
-      const resp = await worker.fetch(url, {
-        redirect: 'manual',
-      })
+      const resp = await worker_request(url)
       const redirectUrl = resp.headers.get('Location')
 
       expect(resp.status).toMatchInlineSnapshot('307')
@@ -95,9 +75,7 @@ describe('Worker', () => {
   })
 
   it('should redirect to migration guide with a proper anchor', async () => {
-    const resp = await worker.fetch('/2.2/migration/validator-and-root_validator-are-deprecated', {
-      redirect: 'manual',
-    })
+    const resp = await worker_request('/2.2/migration/validator-and-root_validator-are-deprecated')
     const redirectUrl = resp.headers.get('Location')
 
     expect(resp.status).toMatchInlineSnapshot('307')
@@ -106,11 +84,15 @@ describe('Worker', () => {
     )
   })
 
-  // it('should get download_count', async () => {
-  //   const resp = await worker.fetch('/download-count.txt')
-  //   expect(resp.status).toMatchInlineSnapshot('200')
-  //
-  //   const text = await resp.text()
-  //   expect(text).includes('M')
-  // })
+  it('should get download_count', async () => {
+    fetchMock
+      .get('https://static.pepy.tech')
+      .intercept({ path: '/badge/pydantic/month' })
+      .reply(200, '<text>123M</text>')
+    const resp = await worker_request('/download-count.txt')
+    expect(resp.status).toMatchInlineSnapshot('200')
+
+    const text = await resp.text()
+    expect(text).toMatchInlineSnapshot('"123M"')
+  })
 })

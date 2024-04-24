@@ -5,11 +5,7 @@ export interface Env {
 }
 
 export default {
-  async fetch(
-    request: Request,
-    env: Env
-    // ctx: ExecutionContext
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     // example URL https://errors.pydantic.dev/2.0/u/decorator-missing-field
     const { url } = request
     const { hostname, pathname, search } = new URL(url)
