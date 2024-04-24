@@ -5,11 +5,7 @@ export interface Env {
 }
 
 export default {
-  async fetch(
-    request: Request,
-    env: Env
-    // ctx: ExecutionContext
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     // example URL https://errors.pydantic.dev/2.0/u/decorator-missing-field
     const { url } = request
     const { hostname, pathname, search } = new URL(url)
@@ -79,7 +75,7 @@ async function errors_pydantic_dev(pathname: string, env: Env): Promise<Response
 }
 
 const PROXY_URLS: Record<string, string> = {
-  fastui: 'https://scolvin.com', // TODO
+  fastui: 'https://fastui.pages.dev',
   logfire: 'https://docs.logfire.dev',
 }
 

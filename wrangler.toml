@@ -1,6 +1,7 @@
 name = "pydantic-errors-redirect"
 main = "src/index.ts"
 compatibility_date = "2023-04-24"
+compatibility_flags = ["nodejs_compat"]
 account_id = "58c2606138e6f7346345b5a882718168"
 routes = [
     "errors.pydantic.dev/*",
