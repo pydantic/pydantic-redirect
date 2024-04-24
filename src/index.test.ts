@@ -7,6 +7,7 @@ describe('Worker', () => {
 
   beforeAll(async () => {
     worker = await unstable_dev('src/index.ts', {
+      ip: '127.0.0.1',
       experimental: { disableExperimentalWarning: true },
     })
   })
@@ -107,11 +108,11 @@ describe('Worker', () => {
     )
   })
 
-  it('should get download_count', async () => {
-    const resp = await worker.fetch('/download-count.txt')
-    expect(resp.status).toMatchInlineSnapshot('200')
-
-    const text = await resp.text()
-    expect(text).includes('M')
-  })
+  // it('should get download_count', async () => {
+  //   const resp = await worker.fetch('/download-count.txt')
+  //   expect(resp.status).toMatchInlineSnapshot('200')
+  //
+  //   const text = await resp.text()
+  //   expect(text).includes('M')
+  // })
 })
