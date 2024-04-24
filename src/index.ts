@@ -88,7 +88,8 @@ async function docs_pydantic_dev(pathname: string, search: string): Promise<Resp
   const [root_dir] = pathname.slice(1).split('/', 1)
   const proxy_url = PROXY_URLS[root_dir]
   if (proxy_url) {
-    return fetch(proxy_url + pathname.substring(root_dir.length + 1) + search)
+    const proxy_path = pathname.substring(root_dir.length + 1) || '/'
+    return fetch(proxy_url + proxy_path + search)
   } else {
     return new Response('Not Found', { status: 404 })
   }
