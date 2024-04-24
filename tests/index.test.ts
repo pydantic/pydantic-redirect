@@ -105,13 +105,11 @@ describe('Worker', () => {
     expect(text).toMatchInlineSnapshot('"<h1>testing</h1>"')
   })
 
-  it('should proxy /fastui', async () => {
-    fetchMock.get('https://fastui.pages.dev').intercept({ path: '/' }).reply(200, '<h1>testing</h1>')
+  it('should redirect /fastui', async () => {
     const resp = await worker_request('https://docs.pydantic.dev/fastui')
-    expect(resp.status).toMatchInlineSnapshot('200')
-
-    const text = await resp.text()
-    expect(text).toMatchInlineSnapshot('"<h1>testing</h1>"')
+    expect(resp.status).toMatchInlineSnapshot('307')
+    const redirectUrl = resp.headers.get('Location')
+    expect(redirectUrl).toMatchInlineSnapshot('"https://docs.pydantic.dev/fastui/"')
   })
 
   it('should proxy /fastui/foo/', async () => {

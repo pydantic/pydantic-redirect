@@ -7,16 +7,16 @@ export interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     // example URL https://errors.pydantic.dev/2.0/u/decorator-missing-field
-    const { url } = request
-    const { hostname, pathname, search } = new URL(url)
+    const url = new URL(request.url)
+    const { hostname, pathname, search } = url
 
     switch (hostname) {
       case 'errors.pydantic.dev':
         return errors_pydantic_dev(pathname, env)
       case 'docs.pydantic.dev':
-        return docs_pydantic_dev(pathname, search)
+        return docs_pydantic_dev(pathname, url)
       default:
-        return new Response(`Not Found - unexpected hostname '${hostname}', url='${url}'`, {
+        return new Response(`Not Found - unexpected hostname '${hostname}', url='${request.url}'`, {
           status: 404,
         })
     }
@@ -80,12 +80,17 @@ const PROXY_URLS: Record<string, string> = {
 }
 
 // for requests to docs.pydantic.dev
-async function docs_pydantic_dev(pathname: string, search: string): Promise<Response> {
+async function docs_pydantic_dev(pathname: string, url: URL): Promise<Response> {
   const [root_dir] = pathname.slice(1).split('/', 1)
   const proxy_url = PROXY_URLS[root_dir]
   if (proxy_url) {
-    const proxy_path = pathname.substring(root_dir.length + 1) || '/'
-    return fetch(proxy_url + proxy_path + search)
+    const proxy_path = pathname.substring(root_dir.length + 1)
+    if (proxy_path == '') {
+      url.pathname = pathname + '/'
+      return Response.redirect(url.toString(), 307)
+    } else {
+      return fetch(proxy_url + proxy_path + url.search)
+    }
   } else {
     return new Response('Not Found', { status: 404 })
   }
