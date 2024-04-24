@@ -107,7 +107,7 @@ describe('Worker', () => {
 
   it('should redirect /fastui', async () => {
     const resp = await worker_request('https://docs.pydantic.dev/fastui')
-    expect(resp.status).toMatchInlineSnapshot('307')
+    expect(resp.status).toMatchInlineSnapshot('301')
     const redirectUrl = resp.headers.get('Location')
     expect(redirectUrl).toMatchInlineSnapshot('"https://docs.pydantic.dev/fastui/"')
   })

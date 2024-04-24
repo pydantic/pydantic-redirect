@@ -87,7 +87,7 @@ async function docs_pydantic_dev(pathname: string, url: URL): Promise<Response> 
     const proxy_path = pathname.substring(root_dir.length + 1)
     if (proxy_path == '') {
       url.pathname = pathname + '/'
-      return Response.redirect(url.toString(), 307)
+      return Response.redirect(url.toString(), 301)
     } else {
       return fetch(proxy_url + proxy_path + url.search)
     }
