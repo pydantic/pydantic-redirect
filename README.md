@@ -11,7 +11,7 @@ Redirects for Pydantic, implemented using CloudFlare workers.
 Example:
 
 ```
-https://errors.pydantic.dev/v2.0a3/u/decorator-missing-field
+https://errors.pydantic.dev/2.7/u/decorator-missing-field
  ->
-https://docs.pydantic.dev/dev-v2/usage/errors/#decorator-missing-field
+https://docs.pydantic.dev/2.7/usage/errors/#decorator-missing-field
 ```

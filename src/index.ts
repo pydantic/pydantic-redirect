@@ -79,7 +79,8 @@ async function errors_pydantic_dev(pathname: string, env: Env): Promise<Response
 }
 
 const PROXY_URLS: Record<string, string> = {
-  fastui: 'https://scolvin.com',
+  fastui: 'https://scolvin.com', // TODO
+  logfire: 'https://docs.logfire.dev',
 }
 
 // for requests to docs.pydantic.dev

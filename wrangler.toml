@@ -4,7 +4,8 @@ compatibility_date = "2023-04-24"
 account_id = "58c2606138e6f7346345b5a882718168"
 routes = [
     "errors.pydantic.dev/*",
-    "docs.pydantic.dev/fastui/*",
+    "docs.pydantic.dev/fastui*",
+    "docs.pydantic.dev/logfire*",
 ]
 
 [vars]
