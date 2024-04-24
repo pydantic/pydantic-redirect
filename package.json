@@ -14,9 +14,8 @@
     "vitest": "^0.30.1"
   },
   "scripts": {
-    "build": "wrangler build",
-    "preview": "wrangler preview --watch",
-    "dev": "wrangler dev --watch",
+    "build": "wrangler publish --dry-run --outdir=dist",
+    "dev": "wrangler dev",
     "format": "eslint src --cache --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx --fix",
     "lint": "eslint src --cache --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx",
     "test": "vitest run",
@@ -53,7 +52,9 @@
           "prettier/prettier": [
             "error",
             {
-              "semi": false
+              "semi": false,
+              "printWidth": 120,
+              "singleQuote": true
             }
           ]
         },
